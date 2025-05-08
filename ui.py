@@ -71,21 +71,34 @@ class JeuUI:
             return
 
         resultat = self.jeu.verifier(int(val))
+
         couleurs = {
-            "petit": "blue", "grand": "purple", "gagné": "green", "perdu": "red"
+            "petit": "blue",
+            "grand": "purple",
+            "gagné": "green",
+            "perdu": "red",
+            "Le jeu est terminé.": "gray"
         }
 
-        if resultat == "gagné":
-            self.label_feedback.config(text="🎉 Gagné !", fg=couleurs[resultat])
-            self.joueur.enregistrer_resultat(True, self.jeu.essais)
-            self.fin_jeu()
-        elif resultat == "perdu":
-            self.label_feedback.config(text=f"😞 Perdu ! C'était {self.jeu.secret}", fg=couleurs[resultat])
-            self.joueur.enregistrer_resultat(False, self.jeu.essais)
-            self.fin_jeu()
-        else:
-            messages = {"petit": "Trop petit !", "grand": "Trop grand !"}
+        messages = {
+            "petit": "Trop petit !",
+            "grand": "Trop grand !",
+            "gagné": "🎉 Gagné !",
+            "perdu": f"😞 Perdu ! C'était {self.jeu.secret}",
+            "Le jeu est terminé.": "Le jeu est déjà terminé."
+        }
+
+        if resultat in messages:
             self.label_feedback.config(text=messages[resultat], fg=couleurs[resultat])
+
+            if resultat == "gagné":
+                self.joueur.enregistrer_resultat(True, self.jeu.essais)
+                self.fin_jeu()
+            elif resultat == "perdu":
+                self.joueur.enregistrer_resultat(False, self.jeu.essais)
+                self.fin_jeu()
+        else:
+            self.label_feedback.config(text="Erreur inconnue", fg="black")
 
     def fin_jeu(self):
         self.scores.enregistrer(self.joueur)

@@ -10,8 +10,13 @@ class GestionScores:
                 json.dump({}, f)
 
     def charger(self):
-        with open(self.chemin, "r") as f:
-            return json.load(f)
+        try:
+            with open(self.chemin, "r") as f:
+                contenu = f.read().strip()
+                return json.loads(contenu) if contenu else {}
+        except (json.JSONDecodeError, FileNotFoundError):
+            return {}
+
 
     def enregistrer(self, joueur):
         data = self.charger()
